@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: smart_attendance
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  backend:
+    build: .
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/smart_attendance
+      JWT_SECRET: changeme
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+volumes:
+  db-data:
+    driver: local
